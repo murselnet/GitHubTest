@@ -1,0 +1,13 @@
+
+2. **.gitignore** - Git'in yok sayması gereken dosyalar için:
+```plaintext
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.vscode/
+*.log

@@ -1,0 +1,603 @@
+Aşağıda EVDS servisine ve evds python kütüphanesine ait kullanım dokümanı bulunmakta. Bu dökümanları çok iyi bir şekilde inceleyerek evds servisinden python ile alabileceğim tüm verileri almam için kapsamlı ve örnekli bir eğitim dokümanı hazırlamanı istiyorum.
+
+
+
+TÜRKİYE CUMHURİYET
+MERKEZ BANKASI
+ELEKTRONİK VERİ DAĞITIM SİSTEMİ
+WEB SERVİS KULLANIM KILAVUZU
+Nisan 2024
+1
+1. EVDS Veri Web Servisleri Kullanım Kılavuzu
+Bu belgede web servis metotlarının parametreleri açıklanmaktadır.
+Farklı işlevdeki parametreler “&” işareti ile ayrılır.
+EVDS’de yer alan veriler en sık olarak günlük frekansta güncellenmektedir. Dolayısıyla Web
+servis yöntemi ile veri alımında günde bir kez veri çekmeniz genel sistem performansı açısından
+önem taşımaktadır. Ayrıca ihtiyaç duyulan, aynı veri grubuna ait serileri birlikte kodlayarak tek
+çağrı ile veri çekilmesi de yararlı olacaktır.
+Seri Parametreleri
+Parametre Adı Açıklama
+series Seri kodları gösterilir. Birden fazla seri seçilmesi durumunda, seri sayısı
+kadar parametre alır, seri kodları “-“ işareti ile ayrılır.
+Tarih Parametreleri
+Parametre Adı Açıklama
+startDate Başlangıç tarihini gösterir.
+endDate Bitiş tarihini gösterir.
+Tercih edilen frekansın eksiksiz görüntülenmesi için başlangıç tarihi alanına o frekansa ait ilk gün
+mutlaka gg-aa-yyyy formatında yazılmalıdır.
+Örnek:
+TP.DK.USD.S.YTL kodlu (USD) ABD Doları (Döviz Satış) isimli seri, başlangıç tarihi 01-01-
+2005, formül DÜZEY ve frekansı YILLIK seçilerek yıllık ortalama veriler hesaplanmıştır.
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.S.YTL&startDate=01-01-
+2005&endDate=01-02- 2017&type=xml&aggregationTypes=avg&formulas=1&frequency=8
+Bu arama ile yapılan sonuçta 2005 verisi görüntülenebiliyor iken, aynı seri için tüm parametreler
+sabit tutularak başlangıç tarihi 02-01-2005 olarak değiştirildiğinde;
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.S.YTL&startDate=02-01-
+2005&endDate=01-02- 2017&type=xml&aggregationTypes=avg&formulas=1&frequency=8
+listeleme 2006 verisi ile başlar. Bu sebeple, istenilen frekansın görüntülenebilmesi için ilgili
+frekansa ait ilk gün yazılmalıdır.
+2
+Bitiş Tarihi gg-aa-yyyy formatında yazılmalıdır.
+Biçim Parametreleri
+Parametre Adı Açıklama
+type Web servislerin dönüş tipi csv, xml ya da json objesi şeklindedir.
+decimalSeperator “,”, “.” Varsayılan değer noktadır. Virgül için parametre girilmelidir.
+API Anahtarı(Key) Parametreleri
+Parametre Adı Açıklama
+key Kullanıcıya tanımlı API anahtarıdır. API Anahtarı her kullanıcı için farklı
+tanımlanır. Key değerini sisteme üye olarak alabilirsiniz.
+Web servis çağrılarında “key” değerini HTTP Request Header’a eklemeniz
+gerekmektedir. Key değerini iletmeyenler veya yanlış gönderenler 403
+Forbidden hatası alacaktır.
+***Api Anahtarı(key=XXXXXXX) her kullanıcı için farklı tanımlanır. Key değerini sisteme
+üye olarak alabilirsiniz.
+• Üye ekranında giriş yaptıktan sonra Kullanıcı ismine tıklayıp gelen menüde Profil
+seçeneği seçilir.
+• Gelen ekranda API Anahtarı düğmesi tıklanarak key değerine ulaşılır.
+Gözlem Parametreleri
+Parametre Adı Açıklama
+aggregationTypes Birden fazla seri seçilmesi durumunda, seri sayısı kadar parametre alır,
+bunlar “-“ karakteri ile ayrılır.
+Ortalama: avg,
+En düşük: min,
+En yüksek: max
+Başlangıç: first,
+Bitiş: last,
+Kümülatif: sum
+Bu parametre kullanıcı tarafından girilmediği takdirde ilgili seri için
+orijinal gözlemin parametresi uygulanır.
+3
+Formül Parametreleri
+Parametre Adı Açıklama
+formulas Birden fazla seri seçilmesi durumunda, seri sayısı kadar parametre alır,
+bunlar “-“ karakteri ile ayrılır.
+Düzey: 0
+Yüzde Değişim: 1
+Fark: 2
+Yıllık Yüzde Değişim: 3
+Yıllık Fark: 4
+Bir Önceki Yılın Sonuna Göre Yüzde Değişim: 5
+Bir Önceki Yılın Sonuna Göre Fark: 6
+Hareketli Ortalama: 7
+Hareketli Toplam: 8
+Bu parametre kullanıcı tarafından girilmediği takdirde ilgili seri için
+düzey parametresi uygulanır.
+Frekans Parametreleri
+Parametre Adı Açıklama
+frequency Bu parametre tek değer alır.
+Günlük: 1
+İşgünü: 2
+Haftalık: 3
+Ayda 2 Kez: 4
+Aylık: 5
+3 Aylık: 6
+6 Aylık: 7
+Yıllık: 8
+Bu parametre kullanıcı tarafından girilmediği takdirde serilerin ortak
+frekansı alınır.
+Serilerin ortak frekansından(örn: yıllık) daha yüksek frekanslı(örn: aylık)
+bir değer girerse, serilerin ortak frekansı dikkate alınır.(örn: yıllık)
+4
+2. En Sık Kullanılan Serilerden Örnek Bağlantılar
+2.1. Düzey Verisi (Ham Veri) Çeken Örnekler
+Category: Exchange Rates
+Data group: Exchange Rates(*)
+Konu Başlığı: Kurlar
+Veri Grubu: Kurlar-Döviz Kurları(*)
+Seri: (USD) ABD Doları (Döviz Alış)- TP.DK.USD.A,
+Seri: (EUR) Euro (Döviz Alış)- TP.DK.EUR.A,
+Seri: (CHF) İsviçre Frangı (Döviz Alış)- TP.DK.CHF.A,
+Seri: (GBP) İngiliz Sterlini (Döviz Alış)- TP.DK.GBP.A,
+Seri: (JPY) Japon Yeni (Döviz Alış)- TP.DK.JPY.A
+Series Tarih
+Parametreleri
+Biçim
+Parametreleri
+Gözlem
+Parametreleri
+Frekans
+Parametreleri
+Formül Parametreleri
+Seri
+Kodları
+Startdate:Başlangıç
+Tarihi
+Enddate: Bitiş Tarihi
+csv
+xml
+json
+Ortalama: avg,
+En düşük: min,
+En yüksek: max
+Başlangıç: first,
+Bitiş: last,
+Kümülatif: sum
+Günlük: 1
+İşgünü: 2
+Haftalık: 3
+Ayda 2 Kez: 4
+Aylık: 5
+3 Aylık: 6
+6 Aylık: 7
+Yıllık: 8
+Düzey: 0
+Yüzde Değişim: 1
+Fark: 2
+Yıllık Yüzde Değişim: 3
+Yıllık Fark: 4
+Bir Önceki Yılın Sonuna
+Göre Yüzde Değişim: 5
+Bir Önceki Yılın Sonuna
+Göre Fark: 6
+Hareketli Ortalama: 7
+Hareketli Toplam: 8
+5
+Yukarıdaki serilerin başlangıç tarihi: 01-10-2017 ve bitiş tarihi:01-11-2017 arası XML veri
+tipindeki düzey (ham) veri çekimi için URL yapısı:
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.A-TP.DK.EUR.A-TP.DK.CHF.ATP.DK.GBP.A-TP.DK.JPY.A&startDate=01-10-2017&endDate=01-11-2017&type=xml
+2.2. Frekans Dönüşümlü Örnekler
+Frekans, formül ve gözlem değerleri kullanılarak örnekler oluşturulmuştur:
+Konu Başlığı: Kurlar
+Veri Grubu: Kurlar-Döviz Kurları(**)
+Örnek 1:
+Seri: (USD) ABD Doları (Döviz Alış)- TP.DK.USD.A.YTL serisi başlangıç tarihi: 01-02-2005
+ve bitiş tarihi:01-02-2017 aralığında biçim parametresi XML, gözlem değeri ortalama, formülü
+yüzde değişim ve frekansı yıllık olarak hesaplanmıştır.
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.A.YTL&startDate=01-02-
+2005&endDate=01-02-2017&type=xml&aggregationTypes=avg&formulas=1&frequency=8
+Örnek 2:
+Seri: (USD) ABD Doları (Döviz Satış)- TP.DK.USD.S.YTL serisi başlangıç tarihi: 01-02-2005
+ve bitiş tarihi: 01-02-2017 aralığında biçim parametresi XML, gözlem değeri ortalama, formülü
+yüzde değişim ve frekansı yıllık olarak hesaplanmıştır.
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.S.YTL&startDate=01-02-
+2005&endDate=01-02-2017&type=xml&aggregationTypes=avg&formulas=1&frequency=8
+Örnek 3:
+Seri: (EUR) Euro (Döviz Alış)- TP.DK.EUR.A.YTL serisi başlangıç tarihi: 01-02-2005 ve bitiş
+tarihi: 01-02-2017 aralığında biçim parametresi XML, gözlem değeri ortalama, formülü yüzde
+değişim ve frekansı aylık olarak hesaplanmıştır.
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.EUR.A.YTL&startDate=01-02-
+2005&endDate=01-02-2017&type=xml&aggregationTypes=avg&formulas=1&frequency=5
+Örnek 4:
+6
+Seri: (EUR) Euro (Döviz Satış)- TP.DK.EUR.S.YTL serisi başlangıç tarihi: 01-02-2005 ve
+bitiş tarihi: 01-02-2017 aralığında biçim parametresi XML, gözlem değeri ortalama, formülü
+yüzde değişim ve frekansı yıllık olarak hesaplanmıştır.
+https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.EUR.S.YTL&startDate=01-02-
+2005&endDate=01-02-2017&type=xml&aggregationTypes=avg&formulas=1&frequency=8
+7
+3. Bir Veri Grubunun Tüm Seri Verileri Sunan Servis
+Veri grubu kodu parametresine göre tüm bağlı serilerin verisini sunan bir servistir.
+Veri Grubu Parametresi
+Parametre Adı Açıklama
+datagroup veri grubu kodu
+Örnek:
+https://evds2.tcmb.gov.tr/service/evds/datagroup=bie_yssk&startDate=01-06-2017&endDate=07-09-
+2017&type=csv
+4. EVDS Metaveri web servisleri
+4.1.Konu Başlığı Servisi
+Tüm konu başlıklarını sunan bir servistir. Bu servisi temsilen
+“https://evds2.tcmb.gov.tr/service/evds/” tanımından sonra “categories” eklenmelidir.
+Örnek:
+https://evds2.tcmb.gov.tr/service/evds/categories/type=xml
+Sonuç Detayları
+Alan Kodu Alan Adı
+CATEGORY_ID Konu Başlığı Kodu,
+TOPIC_TITLE_TR Konu Başlığı Adı
+TOPIC_TITLE_ENG Konu Başlığı Adı (İngilizce)
+4.2.Veri Grubu Servisi
+İlgili Konu başlığı bazında ya da tek bir veri grubunun metaveri bilgilerini listeleyen bir
+servistir.
+Bu servisi temsilen “https://evds2.tcmb.gov.tr/service/evds/” tanımından sonra
+“datagroups” eklenmelidir.
+8
+Durum Parametresi
+Parametre Adı Açıklama
+mode
+Veri grubu listelemesi aşağıdaki filtrelemeye göre yapılır:
+mode=0 Tüm konu başlıkları altındaki tüm veri gruplarını getirir.
+mode=1 Bir veri grubu seçimine göre ilgili veri grubu bilgilerini getirir.
+mode=2 Bir konu başlığı seçimine göre ilgili konu başlığına ait tüm veri grubu
+bilgilerini getirir.
+Kod Parametresi
+Parametre Adı Açıklama
+code
+mode=1 için;
+code=veri grubu kodu
+mode=2 için;
+code=konu başlığı kodu
+Örnekler:
+https://evds2.tcmb.gov.tr/service/evds/datagroups/mode=1&code=bie_yssk&type=json
+https://evds2.tcmb.gov.tr/service/evds/datagroups/mode=2&code=2&type=xml
+Sonuç Detayları
+Alan Kodu Alan Adı
+DATAGROUP_CODE Veri Grubu Kodu
+DATAGROUP_NAME Veri Grubu Adı
+DATAGROUP_NAME_ENG Veri Grubu Adı (İngilizce)
+START_DATE Veri Başlangıç Tarihi
+END_DATE Veri Bitiş Tarihi
+FREQUENCY Orjinal Frekans Kodu
+FREQUENCY_STR Orjinal Frekans Açıklaması
+DATASOURCE Veri Kaynağı
+DATASOURCE_ENG Veri Kaynağı (İngilizce)
+METADATA_LINK Metadata Linki
+METADATA_LINK_ENG Metadata Linki (İngilizce)
+REV_POL_LINK Revizyon Politikası Linki
+REV_POL_LINK_ENG Revizyon Politikası Linki (İngilizce)
+APP_CHA_LINK UYG. DEĞ. LİNK
+APP_CHA_LINK_ENG UYG. DEĞ. LİNK. İNG.
+NOTE Bilgi Notu
+NOTE_ENG Bilgi Notu (İngilizce)
+9
+4.3.Seri Listesi Servisi
+Seri listesini veri grubu ya da seri kodu bazında sunan bir servistir. Bu servisi temsilen
+“https://evds2.tcmb.gov.tr/service/evds/” tanımından sonra “serieList” eklenmelidir.
+Kod Parametresi
+Parametre Adı Açıklama
+code code=veri grubu kodu veya seri kodu
+Örnekler:
+https://evds2.tcmb.gov.tr/service/evds/serieList/type=xml&code=TP.DK.USD.A
+https://evds2.tcmb.gov.tr/service/evds/serieList/type=csv&code=bie_yssk
+Sonuç Detayları
+Alan Kodu Alan Adı
+SERIE_CODE Seri Kodu
+DATAGROUP_CODE Veri Grubu Kodu
+SERIE_NAME Seri Adı
+SERIE_NAME_ENG Seri Adı (İngilizce)
+FREQUENCY_STR Orjinal Frekans Açıklaması
+DEFAULT_AGG_METHOD_STR Varsayılan Dönüşüm Yöntemi Açıklaması
+DEFAULT_AGG_METHOD Varsayılan Dönüşüm Yöntemi
+TAG Etiketler
+TAG_ENG Etiketler (İngilizce)
+DATASOURCE Veri Kaynağı
+DATASOURCE_ENG Veri Kaynağı (İngilizce)
+METADATA_LINK Metadata Linki
+METADATA_LINK_ENG Metadata Linki (İngilizce)
+REV_POL_LINK Revizyon Politikası Linki
+REV_POL_LINK_ENG Revizyon Politikası Linki (İngilizce)
+APP_CHA_LINK UYG. DEĞ. LİNK
+APP_CHA_LINK_ENG UYG. DEĞ. LİNK. İNG.
+START_DATE Veri Başlangıç Tarihi
+END_DATE Veri Bitiş Tarihi
+10
+5. Excel’in İçinden Web Servis Kullanımı
+Bu dokümanda kullanıcılar için EVDS-Elektronik Veri Dağıtım Sistemi’nde seri kodu, zaman aralığı ve
+biçim kodu (XML, JSON, CSV) parametreleri verilerek sistemdeki verileri Excel’e aktarımı ile ilgili kullanım
+bilgileri verilmektedir.
+5.1. Excel 2019 Versiyonu Kullanımı
+Excel 2019’te yeni bir çalışma sayfası açılır.
+Data sayfasında “From Web” seçilir. Advanced seçimi yapılır. Aşağıdaki resimde görüşleceği üzere URL
+adresi girilir, HTTP Request Header alanına “key” ve uygulamadan alınan Api Key Değeri girilir. Tamam
+butonuna basılır.
+11
+12
+13
+
+TÜRKİYE CUMHURİYET MERKEZ
+BANKASI
+ELEKTRONİK VERİ DAĞITIM SİSTEMİ
+EVDS Verilerine PYTHON ile Erişim Kılavuzu(*)
+Nisan 2024
+EVDS - PYTHON
+Kurulum
+evds paketini pip paket yöneticisi aracılığıyla kurabilirsiniz:
+pip install evds --upgrade
+Kullanım
+01-01-2019 - 01-01-2020 arası USD ve EUR alış kurlarına aşağıdaki şekilde erişilebilir.
+from evds import evdsAPI
+evds = evdsAPI('EVDS_API_KEY')
+evds.get_data(['TP.DK.USD.A.YTL','TP.DK.EUR.A.YTL'], startdate="01-01-2019", enddate="01-01-2020")
+get_data fonksiyonu DataFrame return edecektir. İstenmesi halinde evds.data komutu ile JSON formatında
+ham veriye ulaşılabilir.
+API Anahtarı Alma
+evds paketini kullanmak için öncelikle EVDS sistemi üzerinden API Anahtarı almanız gerekmektedir. API
+Anahtarı almak için aşağıdaki adımları izleyiniz:
+1. EVDS sayfasına giriş yaptıktan sonra Giriş Yap ve Kayıt Ol bağlantılarını izleyerek bir EVDS hesabı
+oluşturun.
+2. Ardından kullanıcı adınızın altında yer alan profil bağlantısına tıklayınız.
+3. Profil sayfanızın alt kısmında yer alan "API Anahtarı" butonuna tıklayınız ve açılan kutucukta yer alan
+değeri kopyalayınız.
+5 Nisan 2024 tarihinde yapılan değişiklik.
+URL adresinden giden “key” parametresi artık http request header içinde gelmesi gerekmektedir.
+Örnek;
+import requests
+headers = {'key':'***********'}
+response = requests.get('https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.A-TP.DK.EUR.ATP.DK.CHF.A-TP.DK.GBP.A-TP.DK.JPY.A-TP.MK.F.BILESIK.TUM&startDate=31-01-2024&endDate=31-12-
+2024&type=xml', headers=headers)
+print(response.request.url)
+print(response.request.body)
+print(response.request.headers)
+print(response.content)
+Not: '***********' sizin API anahtarınızdır.
+Detaylı Sorgulama
+get_data fonksiyonu aşağıdaki parametreleri alır:
+series
+Bu parametre liste olarak tanımlanmalıdır. Ayrıca birden fazla seri bu liste içerisinde tanımlanabilir.
+Tanımlanması zorunludur.
+startdate
+Seride yer alan verilerin hangi tarihten itibaren seçileceği bu parametre ile belirlenir. Tanımlanması zorunludur.
+enddate
+Eğer seri üzerinde bir aralık seçimi yapılmak isteniyorsa aralığın bitiş tarihi bu parametre ile belirtilir.
+Tanımlanması ihtiyaridir. Tanımlanmadığı durumda startdate değerine eşit olarak tanımlanır.
+aggregation_types
+Seri içindeki verilerin getirilmesi esnasında kullanılacak olan toplululaştırma yöntemini ifade eder.
+Tanımlanması ihtiyaridir. Eğer tanımlanmamışsa seri için tanımlanan öntanımlı yöntem kullanılır. Ayrıca değer
+olarak string veya liste alabilir. String alması durumunda tüm seriler için aynı yöntem uygulanır. Liste olarak
+tanımlanırsa series parametresinde tanımlanan serilere sırasıyla belirtilen yöntemler uygulanır. Kullanılabilecek
+yöntemler aşağıdaki gibidir:
+Yöntem Parametre
+Değeri
+Ortalama avg
+En düşük min
+En yüksek max
+Başlangıç first
+Bitiş last
+Kümülatif sum
+formulas
+Seri içindeki verilerin getirilmesi esnasında uygulanacak formülü ifade eder. Tanımlanması ihtiyaridir. Eğer
+tanımlanmamışsa seri için tanımlanan öntanımlı formül kullanılır. Ayrıca değer olarak string veya liste alabilir.
+String alması durumunda tüm seriler için aynı formül uygulanır. Liste olarak tanımlanırsa series
+parametresinde tanımlanan serilere sırasıyla belirtilen formüller uygulanır. Kullanılabilecek yöntemler aşağıdaki
+gibidir:
+Formül Değer
+Yüzde Değişim 1
+Fark 2
+Yıllık Yüzde Değişim 3
+Yıllık Fark 4
+Bir Önceki Yılın Sonuna Göre Yüzde Değişim 5
+Bir Önceki Yılın Sonuna Göre Fark 6
+Hareketli Ortalama 7
+Hareketli Toplam 8
+frequency
+Seri içerisinde yer alan verilerin hangi sıklıkla getireceğini ifade eder. Tanımlanması ihtiyaridir. Eğer
+tanımlanmamışsa seri için tanımlanan öntanımlı yayımlanma sıklığı kullanılır.Aşağıdaki değerleri alabilir.
+Sıklık Değer
+Günlük 1
+İşgünü 2
+Haftalık 3
+Ayda 2 Kez 4
+Aylık 5
+3 Aylık 6
+6 Aylık 7
+Yıllık 8
+Mevcut Serileri Listeleme
+EVDS üzerinde veri serileri sırasıyla Ana Kategori, Alt Kategori ve Seri hiyerarşisinde sunulmaktadır.
+get_data fonksiyonun kullanılması için aşağıda yer alan işlemlerin gerçekleştirilmesine gerek yoktur. Veri
+serisine ait kodun bilinmesi durumunda doğrudan get_data fonksiyonu kullanılabilir.
+Ana kategorileri listeleme
+Paket çağırıldığında otomatik olarak API aracılığıyla ana veri kategorileri listelenmektedir.
+...
+evds.main_categories
+komut ile ana kategorileri listeleyebilirsiniz.
+CATEGORY_ID TOPIC_TITLE_TR
+1 PİYASA VERİLERİ
+2 KURLAR
+3 FAİZ İSTATİSTİKLERİ
+4 PARA VE BANKA İSTATİSTİKLERİ
+... ...
+Alt kategorileri listeleme
+Ana kategori altında yer alan alt kategorilere aşağıdaki şekilde ulaşabilirsiniz:
+evds.get_sub_categories('Ana kategori ID'si veya Adı')
+Örnek kulllanım;
+...
+evds.get_sub_categories(6)
+CATEGORY_IDDATAGROUP_CODE DATAGROUP_NAME
+6 bie_dbafod Dış Borç Anapara ve Faiz Ödemeleri ile Diğer T...
+6 bie_dbdborc Dış Borçlar-Brüt (Hazine ve Maliye Bakanlığı)
+6 bie_kvdbs Kısa Vadeli Dış Borç Stoku (milyon ABD doları)
+6 bie_yssk Özel Sektörün Yurt Dışından Sağladığı Uzun Vad...
+Yukarıda yer alan örnekte 6'nolu kategori altında yer alan alt kategoriler listelenmiştir. Ayrıca
+get_sub_categories fonksiyonunda CATEGORY_ID yerine doğrudan ana kategori adı ile kullanabilirsiniz.
+Örneğin
+...
+evds.get_sub_categories("KURLAR")
+Serileri listeleme
+Alt kategori altında yer alan veri serilerine aşağıdaki şekilde ulaşabilirsiniz:
+evds.get_series('Alt kategori adı')
+Örnek kulllanım;
+...
+evds.get_series('bie_dbdborc')
+SERIE_CODE SERIE_NAME START_DATE
+TP.DB.B01 1:TÜRKİYE BRÜT DIŞ BORÇ STOKU 01-10-1989
+TP.DB.B02 2:KISA VADELİ BORÇLAR (Borçluya Göre)01-10-1989
+TP.DB.B03 2A:KAMU (Borçluya Göre) 01-10-1989
+TP.DB.B04 2A1:GENEL YÖNETİM (Borçluya Göre) 01-10-1989
+TP.DB.B05 2A1a:Merkezi Yönetim 01-10-1989
+get_data() fonksiyonu aracılığıyla SERIE_CODE'u kullanarak serilere ait verilere ulaşabilirsiniz.
+(*) EVDS - R kullanımı için, Erol Taymaz (ODTÜ Ekonomi Profesörü) “CBRT: An R Package for Easy Access to the
+CBRT Database” başlıklı portal sayfasına aşağıdaki link ile erişebilirsiniz.
+http://users.metu.edu.tr/etaymaz/cbrt-2019.html
+
+
+Project description
+EVDS
+English
+
+EVDS paketi EVDS-API üzerinden Türkiye Cumhuriyet Merkez Bankası (TCMB) tarafından Elektronik Veri Dağıtım Sistemi (EVDS) aracılığıyla yayımlanan tüm istatistiki verilere python aracılığıyla erişmenize imkan sağlar.
+
+EVDS paketi resmi bir paket olmayıp açık kaynak kodlu olarak geliştirilmektedir.
+
+Kurulum
+evds paketini pip paket yöneticisi aracılığıyla kurabilirsiniz:
+
+pip install evds --upgrade
+Yenilikler
+0.3 sürümü ile aşağıdaki değişiklikler yapıldı:
+
+SSL hatalarının giderilmesi için legacySSL parametresi eklendi. PR #8
+Kod içerisinde düzeltmeler yapıldı. PR #6 PR #4
+request session'un açık kalması nedeniyle ortaya çıkan ResourceWarning uyarısı giderildi. PR #4
+Pandas DataFrame numeric tiplere cast ederken ortaya çıkan FutureWarning uyarıları çıkıyordu. Bu sorun giderildi. PR #9
+0.2 sürümü ile birlikte aşağıdaki özellikler eklenmiştir:
+
+get_data, get_sub_categories ve get_series fonksiyonlarına, raw parametresi eklendi. Bu parametre True olarak tanımlandığında ilgili verilere dictionary formatında erişebilirsiniz.
+Çeşitli hatalar giderildi.
+0.1.1 sürümü ile birlikte aşağıdaki özellikler eklenmiştir:
+
+formulas parametresindeki hata giderildi.
+0.1.0 sürümü ile birlikte aşağıdaki özellikler eklenmiştir:
+
+API üzerinden erişilemeyen serilere ilişkin EVDS'de yapılan güncellemeye paralel olarak tüm serilere erişim olanağı sağlanmıştır.
+Proxy desteği eklenmiştir.
+Küçük hatalar giderildi
+Kullanım
+Örnek kullanım, 01-01-2019 - 01-01-2020 arası USD ve EUR alış kurlarına aşağıdaki şekilde erişilebilir.
+
+from evds import evdsAPI
+evds = evdsAPI('EVDS_API_ANAHTARI')
+evds.get_data(['TP.DK.USD.A.YTL','TP.DK.EUR.A.YTL'], startdate="01-01-2019", enddate="01-01-2020")
+get_data fonksiyonu DataFrame return edecektir. İstenmesi halinde raw=True parametresi ile dictionary formatında ham veriye ulaşılabilir.
+
+API Anahtarı Alma
+evds paketini kullanmak için öncelikle EVDS sistemi üzerinden API Anahtarı almanız gerekmektedir. API Anahtarı almak için aşağıdaki adımları izleyiniz:
+
+EVDS sayfasına giriş yaptıktan sonra Giriş Yap ve Kayıt Ol bağlantılarını izleyerek bir EVDS hesabı oluşturun.
+Ardından kullanıcı adınızın altında yer alan profil bağlantısına tıklayınız.
+01
+
+Profil sayfanızın alt kısmında yer alan "API Anahtarı" butonuna tıklayınız ve açılan kutucukta yer alan değeri kopyalayınız.
+02
+
+Detaylı Sorgulama
+get_data fonksiyonu aşağıdaki parametreleri alır:
+
+series
+Bu parametre liste olarak tanımlanmalıdır. Ayrıca birden fazla seri bu liste içerisinde tanımlanabilir. Tanımlanması zorunludur.
+
+startdate
+Seride yer alan verilerin hangi tarihten itibaren seçileceği bu parametre ile belirlenir. Tanımlanması zorunludur.
+
+enddate
+Eğer seri üzerinde bir aralık seçimi yapılmak isteniyorsa aralığın bitiş tarihi bu parametre ile belirtilir. Tanımlanması ihtiyaridir. Tanımlanmadığı durumda startdate değerine eşit olarak tanımlanır.
+
+raw
+True olması halinde fonksiyon talep edilen veriyi DataFrame yerine dictionary return eder. Örnek kullanım:
+
+...
+evds.get_data(['TP.DK.USD.A.YTL','TP.DK.EUR.A.YTL'], startdate="01-01-2019", enddate="01-01-2020", raw=True)
+aggregation_types
+Seri içindeki verilerin getirilmesi esnasında kullanılacak olan toplululaştırma yöntemini ifade eder. Tanımlanması ihtiyaridir. Eğer tanımlanmamışsa seri için tanımlanan öntanımlı yöntem kullanılır. Ayrıca değer olarak string veya liste alabilir. String alması durumunda tüm seriler için aynı yöntem uygulanır. Liste olarak tanımlanırsa series parametresinde tanımlanan serilere sırasıyla belirtilen yöntemler uygulanır. Kullanılabilecek yöntemler aşağıdaki gibidir:
+
+Yöntem	Parametre Değeri
+Ortalama	avg
+En düşük	min
+En yüksek	max
+Başlangıç	first
+Bitiş	last
+Kümülatif	sum
+formulas
+Seri içindeki verilerin getirilmesi esnasında uygulanacak formülü ifade eder. Tanımlanması ihtiyaridir. Eğer tanımlanmamışsa seri için tanımlanan öntanımlı formül kullanılır. Ayrıca değer olarak string veya liste alabilir. String alması durumunda tüm seriler için aynı formül uygulanır. Liste olarak tanımlanırsa series parametresinde tanımlanan serilere sırasıyla belirtilen formüller uygulanır. Kullanılabilecek yöntemler aşağıdaki gibidir:
+
+Formül	Değer
+Düzey (Öntanımlı)	0
+Yüzde Değişim	1
+Fark	2
+Yıllık Yüzde Değişim	3
+Yıllık Fark	4
+Bir Önceki Yılın Sonuna Göre Yüzde Değişim	5
+Bir Önceki Yılın Sonuna Göre Fark	6
+Hareketli Ortalama	7
+Hareketli Toplam	8
+API formula parametresi uygulandığında orijinal değerleri None olarak yanıtladığı için, formula parametresi tanımladığınız serinin orijinal değerlere ulaşmak için aynı seriyi tekrar ekleyiniz ve formula parametresini 0 olarak tanımlayınız. Örneğin
+
+evds.get_data(['TP.DK.USD.A.YTL','TP.DK.USD.A.YTL'],
+              startdate="01-01-2019",
+              enddate="01-01-2020",
+              formulas=[1,0],
+                )
+USD için yüzde değişim ve orijinal değerlere aynı anda yukarıdaki gibi ulaşabilirsiniz.
+
+frequency
+Seri içerisinde yer alan verilerin hangi sıklıkla getireceğini ifade eder. Tanımlanması ihtiyaridir. Eğer tanımlanmamışsa seri için tanımlanan öntanımlı yayımlanma sıklığı kullanılır.Aşağıdaki değerleri alabilir.
+
+Sıklık	Değer
+Günlük	1
+İşgünü	2
+Haftalık	3
+Ayda 2 Kez	4
+Aylık	5
+3 Aylık	6
+6 Aylık	7
+Yıllık	8
+Mevcut Serileri Listeleme
+EVDS üzerinde veri serileri sırasıyla Ana Kategori, Alt Kategori ve Seri hiyerarşisinde sunulmaktadır.
+
+get_data fonksiyonun kullanılması için aşağıda yer alan işlemlerin gerçekleştirilmesine gerek yoktur. Veri serisine ait kodun bilinmesi durumunda doğrudan get_data fonksiyonu kullanılabilir.
+
+Ana kategorileri listeleme
+main_categories değişkeni ile ana kategorileri listeleyebilirsiniz.
+
+...
+evds.main_categories
+komut ile ana kategorileri listeleyebilirsiniz.
+
+CATEGORY_ID	TOPIC_TITLE_TR
+1	PİYASA VERİLERİ
+2	KURLAR
+3	FAİZ İSTATİSTİKLERİ
+4	PARA VE BANKA İSTATİSTİKLERİ
+...	...
+Alt kategorileri listeleme
+Ana kategori altında yer alan alt kategorilere aşağıdaki şekilde ulaşabilirsiniz. Ayrıca raw=True parametresi ile DataFrame yerine dictionary formatında alt kategorileri ulaşılabilir.
+
+evds.get_sub_categories('Ana kategori ID'si veya Adı')
+Örnek kulllanım;
+
+...
+evds.get_sub_categories(6)
+CATEGORY_ID	DATAGROUP_CODE	DATAGROUP_NAME
+6	bie_dbafod	Dış Borç Anapara ve Faiz Ödemeleri ile Diğer T...
+6	bie_dbdborc	Dış Borçlar-Brüt (Hazine ve Maliye Bakanlığı)
+6	bie_kvdbs	Kısa Vadeli Dış Borç Stoku (milyon ABD doları)
+6	bie_yssk	Özel Sektörün Yurt Dışından Sağladığı Uzun Vad...
+Yukarıda yer alan örnekte 6'nolu kategori altında yer alan alt kategoriler listelenmiştir. Ayrıca get_sub_categories fonksiyonunda CATEGORY_ID yerine doğrudan ana kategori adı ile kullanabilirsiniz. Örneğin
+
+...
+evds.get_sub_categories("KURLAR")
+Serileri listeleme
+Alt kategori altında yer alan veri serilerine aşağıdaki şekilde ulaşabilirsiniz. Ayrıca raw=True parametresi ile DataFrame yerine dictionary formatında serilere ulaşılabilir.
+
+evds.get_series('Alt kategori adı')
+Örnek kulllanım;
+
+...
+evds.get_series('bie_dbdborc')
+SERIE_CODE	SERIE_NAME	START_DATE
+TP.DB.B01	1:TÜRKİYE BRÜT DIŞ BORÇ STOKU	01-10-1989
+TP.DB.B02	2:KISA VADELİ BORÇLAR (Borçluya Göre)	01-10-1989
+TP.DB.B03	2A:KAMU (Borçluya Göre)	01-10-1989
+TP.DB.B04	2A1:GENEL YÖNETİM (Borçluya Göre)	01-10-1989
+TP.DB.B05	2A1a:Merkezi Yönetim	01-10-1989
+get_data() fonksiyonu aracılığıyla SERIE_CODE'u kullanarak serilere ait verilere ulaşabilirsiniz.
+
+Proxy Tanımlama
+Proxy adresinizi aşağıdaki gibi proxies parametresi ile tanımlayabilirsiniz. Ayrıca httpsVerify parametresi ile https kontrolünü devre dışı bırakabilirsiniz.
+
+proxies = { "https" : "HTTPS_PROXY_URL"}
+evds = evdsAPI('EVDS_API_ANAHTARI', proxies=proxies, httpsVerify=False)
+SSLError Hatası çözümü
+Sunucu sertifikası ve kullanılan python paketlerinden kaynaklı olarak SSL hatası alınabilmektedir. Bu hata durumunda legacySSL parametresi kullanılabilir:
+
+evds = evdsAPI('EVDS_API_ANAHTARI', legacySSL=True)
+
+
+

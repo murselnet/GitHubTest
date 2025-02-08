@@ -12,5 +12,6 @@ for i in range(1, 11):
 # terminale 1 den 10 kadar sayıların karesini yazdırma
 for i in range(1, 11):
     print(i**2)
-    
-    
+
+
+# burayı repoya gönder
