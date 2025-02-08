@@ -6,3 +6,5 @@ if __name__ == "__main__":
     
 
 # merhaba from app.py
+
+# cuma silinecek
