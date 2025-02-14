@@ -5,7 +5,7 @@ BTK test amaçlı.
 
 
 
-# Python Terminal Örnekleri
+## Python Terminal Örnekleri
 
 Bu proje, Python'da temel terminal çıktı işlemlerini göstermek için oluşturulmuştur.
 
@@ -20,3 +20,6 @@ Bu proje, Python'da temel terminal çıktı işlemlerini göstermek için oluşt
 ```python
 python main.py
 ```
+## 😊
+
+

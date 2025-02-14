@@ -1,9 +1,9 @@
 print("Hello, World!")
 
 
+
 # pull request deneme
 
-# merhaba
 
 # terminale 1 den 10 kadar sayıları yazdırma
 for i in range(1, 11):
@@ -15,3 +15,4 @@ for i in range(1, 11):
 
 
 # burayı repoya gönder
+

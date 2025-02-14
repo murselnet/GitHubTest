@@ -9,4 +9,4 @@ if __name__ == "__main__":
 
 # cuma silinecek
 
-# tekrar dene
+# tekrar dene       
