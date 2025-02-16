@@ -1,2 +1,2 @@
 bir
-master ve front kardeştir
+master ve front kardeştir 2. merge
