@@ -1,2 +1,4 @@
 bir
 commit dolaşma ilk commit
+
+commit dolaşma ikinci commit
