@@ -2,3 +2,5 @@ dort
 hello
 frontta yazıldı
 2. defa
+
+stash dersi
