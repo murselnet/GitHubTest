@@ -4,3 +4,5 @@ commit dolaşma ilk commit
 commit dolaşma ikinci commit
 
 diff denemesi
+
+merhaba stash

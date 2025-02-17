@@ -1,0 +1,1 @@
+# Sen uzman bir yazılım geliştiricisin.
