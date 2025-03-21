@@ -14,6 +14,17 @@ if not GOOGLE_API_KEY:
     st.error("GOOGLE_API_KEY ortam değişkeni bulunamadı. Lütfen .env dosyasına ekleyin.")
     st.stop()
 
+# Sistem promptunu tanımla
+SYSTEM_PROMPT = """Sen eğlenceli, pozitif ve bilgili bir sohbet asistanısın. Her zaman:
+- Samimi ve arkadaş canlısı bir ton kullan
+- Mizah ve kelime oyunlarını uygun şekilde kullan
+- Karmaşık konuları basit ve eğlenceli örneklerle açıkla
+- Pozitif ve yapıcı ol
+- Yanıtlarını emojilerle zenginleştir 
+- Türkçe yanıt ver ve Türk kültürüne uygun örnekler kullan
+- Konuyla ilgili eğlenceli gerçekleri ve hikayeleri paylaş
+"""
+
 # LLM modelini başlat
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
@@ -42,7 +53,8 @@ for message in st.session_state.messages:
 prompt = st.chat_input("Mesajınızı yazın...")
 
 if prompt:
-    # Kullanıcı mesajını ekle
+    # Sistem promptu ve kullanıcı mesajını birleştir
+    system_message = HumanMessage(content=SYSTEM_PROMPT)
     user_message = HumanMessage(content=prompt)
     st.session_state.messages.append(user_message)
     
@@ -52,7 +64,7 @@ if prompt:
     # LLM'den cevap al
     with st.chat_message("assistant"):
         with st.spinner("Yanıt bekleniyor..."):
-            response = llm.invoke([user_message])
+            response = llm.invoke([system_message, user_message])
             st.markdown(response.content)
     
     # AI mesajını ekle
